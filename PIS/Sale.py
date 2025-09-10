@@ -32,7 +32,24 @@ class Sale:
             self.set_sale_date(parts[2])
             self.set_base_price(float(parts[3]))
             self.set_discount(float(parts[4]))
+    def get_long_info(self):
+        return (f"(sale_id={self.sale_id}, client_id={self.client_id}, "
+                f"tour_id={self.tour_id}, sale_date='{self.sale_date}', "
+                f"base_price={self.base_price}, discount={self.discount}, "
+                f"final_price={self.final_price})")
+    def get_short_info(self):
+        return (f"Номер продажы #{self.sale_id}: клиент={self.client_id}, "
+                f"тур={self.tour_id}, итого={self.final_price} руб.")
 
+    def is_equal(self, obj):
+        if not isinstance(obj, Sale):
+            return False
+        return (self.client_id == obj.client_id and
+                self.tour_id == obj.tour_id and
+                self.sale_date == obj.sale_date and
+                self.base_price == obj.base_price and
+                self.discount == obj.discount and
+                self.final_price == obj.final_price)
     @staticmethod
     def is_valid_id(id):
         return id is not None and id>0
@@ -127,4 +144,12 @@ str = (
 )
 sale4 = Sale(data = str)
 print("Итоговая цена: ", sale4.get_final_price())
+
+print("Полная информация:")
+print(sale1.get_long_info())
+
+print("\nКраткая информация:")
+print(sale1.get_short_info())
+print("Продажи равны? ", sale1.is_equal(sale2))
+
 
