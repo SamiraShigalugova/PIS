@@ -1,5 +1,6 @@
+import json
 class Sale:
-    def __init__(self):
+    def __init__(self, client_id=None, tour_id=None, sale_date=None, base_price=0.0, discount=0.0, data=None):
         self.sale_id = None
         self.client_id = None
         self.tour_id = None
@@ -7,8 +8,30 @@ class Sale:
         self.base_price = 0.0
         self.discount = 0.0
         self.final_price = 0.0
-
-
+        if data is not None:
+            self.from_str(data)
+        elif client_id is not None and tour_id is not None and sale_date is not None:
+            self.set_client_id(client_id)
+            self.set_tour_id(tour_id)
+            self.set_sale_date(sale_date)
+            self.set_base_price(base_price)
+            self.set_discount(discount)
+    def from_str(self,data):
+        data = data.strip()
+        if data.startswith("{"):
+            data_dict = json.loads(data)
+            self.set_client_id(data_dict["clientId"])
+            self.set_tour_id(data_dict["tourId"])
+            self.set_sale_date(data_dict["saleDate"])
+            self.set_base_price(data_dict["basePrice"])
+            self.set_discount(data_dict["discount"])
+        else:
+            parts = data.split(",")
+            self.set_client_id(int(parts[0]))
+            self.set_tour_id(int(parts[1]))
+            self.set_sale_date(parts[2])
+            self.set_base_price(float(parts[3]))
+            self.set_discount(float(parts[4]))
 
     @staticmethod
     def is_valid_id(id):
@@ -77,11 +100,31 @@ class Sale:
             res = 0.0
         self.final_price = res
 
-sale = Sale()
-sale.set_client_id(123)
-sale.set_tour_id(456)
-sale.set_sale_date("2025-12-12")
-sale.set_base_price(1000.00)
-sale.set_discount(100.00)
+sale1 = Sale()
+sale1.set_client_id(123)
+sale1.set_tour_id(456)
+sale1.set_sale_date("2025-12-12")
+sale1.set_base_price(1000.00)
+sale1.set_discount(100.00)
+print("Итоговая цена: ", sale1.get_final_price())
 
-print("Итоговая цена: ", sale.get_final_price())
+print("Конструктор с параметрами: ")
+sale2 = Sale(client_id=123, tour_id=456,sale_date="2025-12-12",base_price=1000, discount=50)
+print("Итоговая цена: ", sale2.get_final_price())
+
+print("Конструктор из строки: ")
+sale3 = Sale(data = "123,456,2025-12-12,500,300")
+print("Итоговая цена: ", sale3.get_final_price())
+
+
+print("Конструктор из json: ")
+str = (
+    '{"clientId": 123, '
+       '"tourId": 456, '
+       '"saleDate": "2024-12-12", '
+       '"basePrice": 3000, '
+       '"discount": 100}'
+)
+sale4 = Sale(data = str)
+print("Итоговая цена: ", sale4.get_final_price())
+
