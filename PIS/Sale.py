@@ -1,5 +1,3 @@
-
-
 class Sale:
     def __init__(self):
         self.sale_id = None
@@ -10,6 +8,22 @@ class Sale:
         self.discount = 0.0
         self.final_price = 0.0
 
+
+
+    @staticmethod
+    def is_valid_id(id):
+        return id is not None and id>0
+    @staticmethod
+    def is_valid_date(date):
+        return date is not None and date.strip()!= ""
+    @staticmethod
+    def is_valid_price(price):
+        return price > 0
+    @staticmethod
+    def is_valid_discount(discoint):
+        return discoint>=0
+
+    
     def get_sale_id(self):
         return self.sale_id
     def get_client_id(self):
@@ -29,29 +43,34 @@ class Sale:
 
     def set_sale_id(self, sale_id):
         self.sale_id = sale_id
-    def set_client_id(self, client_id):
-        if client_id is None or client_id <=0:
+        def set_client_id(self, client_id):
+        if not Sale.is_valid_id(client_id):
             raise ValueError("ID клиента должно быть положительным числом")
         self.client_id = client_id
+
+
     def set_tour_id(self, tour_id):
-        if tour_id is None or tour_id <= 0:
+        if not Sale.is_valid_id(tour_id):
             raise ValueError("ID тура должно быть положительным числом")
         self.tour_id = tour_id
+
     def set_sale_date(self, sale_date):
-        if sale_date is None or sale_date.strip() == "":
+        if not Sale.is_valid_date(sale_date):
             raise ValueError("Дата продажи не должна быть пустой")
         self.sale_date = sale_date
+
     def set_base_price(self, base_price):
-        if base_price<=0:
+        if not Sale.is_valid_price(base_price):
             raise ValueError("Стоимость должна быть положительная")
         self.base_price = base_price
         self.calculate_final_price()
 
     def set_discount(self, discount):
-        if discount < 0:
+        if not Sale.is_valid_discount(discount):
             raise ValueError("Скидка не может быть отрицательной")
         self.discount = discount
         self.calculate_final_price()
+
     def calculate_final_price(self):
         res = self.base_price - self. discount
         if res<0:
@@ -64,4 +83,5 @@ sale.set_tour_id(456)
 sale.set_sale_date("2025-12-12")
 sale.set_base_price(1000.00)
 sale.set_discount(100.00)
+
 print("Итоговая цена: ", sale.get_final_price())
