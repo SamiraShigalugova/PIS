@@ -1,4 +1,32 @@
 import json
+class shortSale:
+    def __init__(self, sale_id=None, client_id=None, tour_id=None, final_price=0.0):
+        self.sale_id = sale_id
+        self.client_id = client_id
+        self.tour_id = tour_id
+        self.final_price = final_price
+    @classmethod
+    def short(cls, sale):
+        return cls(sale.get_sale_id(),
+                   sale.get_client_id(),
+                  sale.get_tour_id(),
+                   sale.get_final_price()
+                   )
+
+    def get_sale_id(self):
+        return self.sale_id
+    def get_client_id(self):
+        return self.client_id
+    def get_tour_id(self):
+        return self.tour_id
+    def get_final_price(self):
+        return self.final_price
+
+    def get_info(self):
+        if self.sale_id is not None:
+            return f"#{self.sale_id}: клиент {self.client_id}, тур {self.tour_id}, сумма: {self.final_price} руб."
+        else:
+            return f"клиент {self.client_id}, тур {self.tour_id}, сумма: {self.final_price} руб."
 class Sale:
     def __init__(self, client_id=None, tour_id=None, sale_date=None, base_price=0.0, discount=0.0, data=None):
         self.sale_id = None
@@ -40,6 +68,9 @@ class Sale:
     def get_short_info(self):
         return (f"Номер продажы #{self.sale_id}: клиент={self.client_id}, "
                 f"тур={self.tour_id}, итого={self.final_price} руб.")
+
+    def short_version(self):
+        return shortSale(self.sale_id, self.client_id, self.tour_id, self.final_price)
 
     def is_equal(self, obj):
         if not isinstance(obj, Sale):
@@ -152,4 +183,7 @@ print("\nКраткая информация:")
 print(sale1.get_short_info())
 print("Продажи равны? ", sale1.is_equal(sale2))
 
+print("\nКороткая версия ")
+short_sale = shortSale.short(sale1)
+print("Вывод -", short_sale.get_info())
 
