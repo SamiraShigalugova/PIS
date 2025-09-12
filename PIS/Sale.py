@@ -24,11 +24,11 @@ class BaseSaleClass:
     def set_sale_id(self, sale_id):
         self.sale_id = sale_id
     def set_client_id(self, client_id):
-        if not Sale.is_valid_id(client_id):
+        if not BaseSaleClass.is_valid_id(client_id):
             raise ValueError("ID клиента должно быть положительным числом")
         self.client_id = client_id
     def set_tour_id(self, tour_id):
-        if not Sale.is_valid_id(tour_id):
+        if not BaseSaleClass.is_valid_id(tour_id):
             raise ValueError("ID тура должно быть положительным числом")
         self.tour_id = tour_id
     def set_final_price(self, final_price):
@@ -37,11 +37,9 @@ class BaseSaleClass:
         self.final_price = final_price
 
 
-
-
 class shortSale(BaseSaleClass):
     def __init__(self, sale_id=None, client_id=None, tour_id=None, final_price=0.0):
-        super().__init__(None, client_id, tour_id, 0.0)
+        super().__init__(sale_id, client_id, tour_id, final_price)
     @classmethod
     def short(cls, sale):
         return cls(sale.get_sale_id(),
@@ -88,7 +86,7 @@ class Sale(BaseSaleClass):
             self.set_discount(float(parts[4]))
 
     def short_version(self):
-        return shortSale(self.sale_id, self.client_id, self.tour_id, self.final_price)
+        return shortSale.short(self)
     def get_long_info(self):
         return (f"(sale_id={self.sale_id}, client_id={self.client_id}, "
                 f"tour_id={self.tour_id}, sale_date='{self.sale_date}', "
@@ -110,9 +108,6 @@ class Sale(BaseSaleClass):
     def is_valid_date(date):
         return date is not None and date.strip() != ""
     @staticmethod
-    def is_valid_price(price):
-        return price > 0
-    @staticmethod
     def is_valid_discount(discoint):
         return discoint>=0
 
@@ -129,7 +124,7 @@ class Sale(BaseSaleClass):
         self.sale_date = sale_date
 
     def set_base_price(self, base_price):
-        if not Sale.is_valid_price(base_price):
+        if not BaseSaleClass.is_valid_price(base_price):
             raise ValueError("Стоимость должна быть положительная")
         self.base_price = base_price
         self.calculate_final_price()
@@ -180,8 +175,5 @@ print("\nКороткая версия ")
 short_sale = shortSale.short(sale1)
 print("Вывод -", short_sale.get_info())
 print("Продажи равны? ", sale1.is_equal(sale2))
-
-
-
 
 
