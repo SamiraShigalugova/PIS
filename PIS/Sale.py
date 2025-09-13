@@ -1,14 +1,15 @@
 import json
+
 class Sale:
     def __init__(self, sale_id=None, client_id=None, tour_id=None, final_price=0.0,
                  sale_date=None, base_price=0.0, discount=0.0, data=None):
-        self.sale_id = sale_id
-        self.client_id = client_id
-        self.tour_id = tour_id
-        self.final_price = final_price
-        self.sale_date = None
-        self.base_price = 0.0
-        self.discount = 0.0
+        self.__sale_id = sale_id
+        self.__client_id = client_id
+        self.__tour_id = tour_id
+        self.__final_price = final_price
+        self.__sale_date = None
+        self.__base_price = 0.0
+        self.__discount = 0.0
         if data is not None:
             self.from_str(data)
         elif client_id is not None and tour_id is not None and sale_date is not None:
@@ -19,62 +20,76 @@ class Sale:
             self.set_discount(discount)
 
     def get_sale_id(self):
-        return self.sale_id
+        return self.__sale_id
+
     def get_client_id(self):
-        return self.client_id
+        return self.__client_id
+
     def get_tour_id(self):
-        return self.tour_id
+        return self.__tour_id
+
     def get_final_price(self):
-        return self.final_price
+        return self.__final_price
+
     def get_sale_date(self):
-        return self.sale_date
+        return self.__sale_date
+
     def get_base_price(self):
-        return self.base_price
+        return self.__base_price
+
     def get_discount(self):
-        return self.discount
+        return self.__discount
 
     @staticmethod
     def is_valid_id(id):
         return id is not None and id > 0
+
     @staticmethod
     def is_valid_price(price):
         return price > 0
+
     @staticmethod
     def is_valid_date(date):
         return date is not None and date.strip() != ""
+
     @staticmethod
     def is_valid_discount(discount):
         return discount >= 0
 
     def set_sale_id(self, sale_id):
-        self.sale_id = sale_id
+        self.__sale_id = sale_id
+
     def set_client_id(self, client_id):
         if not Sale.is_valid_id(client_id):
             raise ValueError("ID клиента должно быть положительным числом")
-        self.client_id = client_id
+        self.__client_id = client_id
+
     def set_tour_id(self, tour_id):
         if not Sale.is_valid_id(tour_id):
             raise ValueError("ID тура должно быть положительным числом")
-        self.tour_id = tour_id
+        self.__tour_id = tour_id
+
     def set_final_price(self, final_price):
         if final_price < 0:
             raise ValueError("Итоговая цена не может быть отрицательной")
-        self.final_price = final_price
+        self.__final_price = final_price
+
     def set_sale_date(self, sale_date):
         if not Sale.is_valid_date(sale_date):
             raise ValueError("Дата продажи не должна быть пустой")
-        self.sale_date = sale_date
+        self.__sale_date = sale_date
+
     def set_base_price(self, base_price):
         if not Sale.is_valid_price(base_price):
             raise ValueError("Стоимость должна быть положительная")
-        self.base_price = base_price
+        self.__base_price = base_price
         self.calculate_final_price()
+
     def set_discount(self, discount):
         if not Sale.is_valid_discount(discount):
             raise ValueError("Скидка не может быть отрицательной")
-        self.discount = discount
+        self.__discount = discount
         self.calculate_final_price()
-
 
     def from_str(self, data):
         data = data.strip()
@@ -92,24 +107,28 @@ class Sale:
             self.set_sale_date(parts[2])
             self.set_base_price(float(parts[3]))
             self.set_discount(float(parts[4]))
+
     def short_version(self):
         return shortSale.short(self)
+
     def get_long_info(self):
-        return (f"(sale_id={self.sale_id}, client_id={self.client_id}, "
-                f"tour_id={self.tour_id}, sale_date='{self.sale_date}', "
-                f"base_price={self.base_price}, discount={self.discount}, "
-                f"final_price={self.final_price})")
+        return (f"(sale_id={self.__sale_id}, client_id={self.__client_id}, "
+                f"tour_id={self.__tour_id}, sale_date='{self.__sale_date}', "
+                f"base_price={self.__base_price}, discount={self.__discount}, "
+                f"final_price={self.__final_price})")
+
     def is_equal(self, obj):
         if not isinstance(obj, Sale):
             return False
-        return (self.client_id == obj.client_id and
-                self.tour_id == obj.tour_id and
-                self.sale_date == obj.sale_date and
-                self.base_price == obj.base_price and
-                self.discount == obj.discount and
-                self.final_price == obj.final_price)
+        return (self.__client_id == obj.__client_id and
+                self.__tour_id == obj.__tour_id and
+                self.__sale_date == obj.__sale_date and
+                self.__base_price == obj.__base_price and
+                self.__discount == obj.__discount and
+                self.__final_price == obj.__final_price)
+
     def calculate_final_price(self):
-        res = self.base_price - self.discount
+        res = self.__base_price - self.__discount
         if res < 0:
             res = 0.0
         self.set_final_price(res)
@@ -118,21 +137,26 @@ class Sale:
 class shortSale(Sale):
     def __init__(self, sale_id=None, client_id=None, tour_id=None, final_price=0.0):
         super().__init__(sale_id=sale_id, client_id=client_id, tour_id=tour_id, final_price=final_price)
+        self.__sale_id = sale_id
+        self.__client_id = client_id
+        self.__tour_id = tour_id
+        self.__final_price = final_price
+
     @classmethod
     def short(cls, sale):
         return cls(sale.get_sale_id(),
                    sale.get_client_id(),
                    sale.get_tour_id(),
                    sale.get_final_price())
+
     def get_info(self):
-        if self.sale_id is not None:
-            return f"#{self.sale_id}: клиент {self.client_id}, тур {self.tour_id}, сумма: {self.final_price} руб."
+        if self.__sale_id is not None:
+            return f"#{self.__sale_id}: клиент {self.__client_id}, тур {self.__tour_id}, сумма: {self.__final_price} руб."
         else:
-            return f"клиент {self.client_id}, тур {self.tour_id}, сумма: {self.final_price} руб."
+            return f"клиент {self.__client_id}, тур {self.__tour_id}, сумма: {self.__final_price} руб."
 
 
-
-
+# Тестирование
 sale1 = Sale()
 sale1.set_client_id(123)
 sale1.set_tour_id(456)
@@ -167,5 +191,3 @@ print("\nКороткая версия ")
 short_sale = shortSale.short(sale1)
 print("Вывод -", short_sale.get_info())
 print("Продажи равны? ", sale1.is_equal(sale2))
-
-
